@@ -3,6 +3,8 @@ dist/
 .env
 *.log
 .DS_Store
+coverage/
+.vitest/
 # Logs
 logs
 *.log
