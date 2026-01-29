@@ -6,8 +6,8 @@ import { BadRequestError } from '../errors/customErrors.js';
 export class UserController {
   private userService: UserService;
 
-  constructor(userService?: UserService) {
-    this.userService = userService || new UserService();
+  constructor(userService: UserService) {
+    this.userService = userService;
   }
 
   getAllUsers(req: Request, res: Response, next: NextFunction): void {

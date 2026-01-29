@@ -5,8 +5,8 @@ import { NotFoundError, ConflictError } from '../errors/customErrors.js';
 export class UserService {
   private userRepository: UserRepository;
 
-  constructor(userRepository?: UserRepository) {
-    this.userRepository = userRepository || new UserRepository();
+  constructor(userRepository: UserRepository) {
+    this.userRepository = userRepository;
   }
 
   getAllUsers(): User[] {
