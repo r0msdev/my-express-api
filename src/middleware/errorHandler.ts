@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import { logger } from '../utils/logger.js';
 import { AppError } from '../errors/customErrors.js';
+import { env } from '../config/env.js';
 
 export const errorHandler = (
   err: Error,
@@ -28,6 +29,6 @@ export const errorHandler = (
   
   res.status(500).json({
     error: 'Internal Server Error',
-    message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
+    message: env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
   });
 };

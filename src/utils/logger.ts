@@ -1,7 +1,10 @@
 import pino from 'pino';
 
+// Get log level from env or default to 'info'
+const logLevel = process.env.LOG_LEVEL || 'info';
+
 export const logger = pino({
-  level: process.env.LOG_LEVEL || 'info',
+  level: logLevel,
   transport: {
     target: 'pino-pretty',
     options: {
