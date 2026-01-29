@@ -13,6 +13,7 @@ export class UserController {
       const users = this.userService.getAllUsers();
       res.status(200).json(users);
     } catch (error) {
+      console.error('Error fetching users:', error);
       res.status(500).json({ error: 'Failed to fetch users' });
     }
   }
@@ -33,6 +34,7 @@ export class UserController {
       
       res.status(200).json(user);
     } catch (error) {
+      console.error('Error fetching user:', error);
       res.status(500).json({ error: 'Failed to fetch user' });
     }
   }
@@ -43,6 +45,7 @@ export class UserController {
       const newUser = this.userService.createUser(userData);
       res.status(201).json(newUser);
     } catch (error) {
+      console.error('Error creating user:', error);
       res.status(400).json({ error: 'Failed to create user' });
     }
   }
@@ -64,6 +67,7 @@ export class UserController {
       
       res.status(200).json(updatedUser);
     } catch (error) {
+      console.error('Error updating user:', error);
       res.status(400).json({ error: 'Failed to update user' });
     }
   }
@@ -84,6 +88,7 @@ export class UserController {
       
       res.status(204).send();
     } catch (error) {
+      console.error('Error deleting user:', error);
       res.status(500).json({ error: 'Failed to delete user' });
     }
   }
