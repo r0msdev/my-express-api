@@ -1,46 +1,56 @@
 import type { User } from '../models/user.js';
+import { UserRepository } from '../repositories/userRepository.js';
+import { NotFoundError, ConflictError } from '../errors/customErrors.js';
 
 export class UserService {
-  private users: User[] = [];
-  private nextId = 1;
+  private userRepository: UserRepository;
 
-  getAllUsers(): User[] {
-    return this.users;
+  constructor(userRepository?: UserRepository) {
+    this.userRepository = userRepository || new UserRepository();
   }
 
-  getUserById(id: string): User | undefined {
-    return this.users.find(user => user.id === id);
+  getAllUsers(): User[] {
+    return this.userRepository.findAll();
+  }
+
+  getUserById(id: string): User {
+    const user = this.userRepository.findById(id);
+    if (!user) {
+      throw new NotFoundError('User not found');
+    }
+    return user;
   }
 
   createUser(userData: Omit<User, 'id'>): User {
-    const newUser: User = {
-      id: String(this.nextId++),
-      ...userData
-    };
-    this.users.push(newUser);
-    return newUser;
-  }
-
-  updateUser(id: string, userData: Partial<Omit<User, 'id'>>): User | null {
-    const index = this.users.findIndex(user => user.id === id);
-    
-    if (index === -1) {
-      return null;
+    // Business logic: Check if email already exists
+    if (this.userRepository.existsByEmail(userData.email)) {
+      throw new ConflictError('User with this email already exists');
     }
     
-    const currentUser = this.users[index]!;
-    this.users[index] = { ...currentUser, ...userData, id: currentUser.id };
-    return this.users[index];
+    return this.userRepository.create(userData);
   }
 
-  deleteUser(id: string): boolean {
-    const index = this.users.findIndex(user => user.id === id);
-    
-    if (index === -1) {
-      return false;
+  updateUser(id: string, userData: Partial<Omit<User, 'id'>>): User {
+    // Business logic: Check if email is being changed to an existing one
+    if (userData.email && this.userRepository.existsByEmail(userData.email)) {
+      const existingUser = this.userRepository.findById(id);
+      if (existingUser?.email !== userData.email) {
+        throw new ConflictError('User with this email already exists');
+      }
+    }
+
+    const updatedUser = this.userRepository.update(id, userData);
+    if (!updatedUser) {
+      throw new NotFoundError('User not found');
     }
     
-    this.users.splice(index, 1);
-    return true;
+    return updatedUser;
+  }
+
+  deleteUser(id: string): void {
+    const deleted = this.userRepository.delete(id);
+    if (!deleted) {
+      throw new NotFoundError('User not found');
+    }
   }
 }

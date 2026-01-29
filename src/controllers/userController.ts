@@ -1,107 +1,79 @@
-import type { Request, Response } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import { UserService } from '../services/userService.js';
 import { logger } from '../utils/logger.js';
+import { BadRequestError } from '../errors/customErrors.js';
 
 export class UserController {
   private userService: UserService;
 
-  constructor() {
-    this.userService = new UserService();
+  constructor(userService?: UserService) {
+    this.userService = userService || new UserService();
   }
 
-  getAllUsers(req: Request, res: Response): void {
+  getAllUsers(req: Request, res: Response, next: NextFunction): void {
     try {
       const users = this.userService.getAllUsers();
       logger.info({ count: users.length }, 'Fetched all users');
       res.status(200).json(users);
     } catch (error) {
-      logger.error({ error }, 'Error fetching users');
-      res.status(500).json({ error: 'Failed to fetch users' });
+      next(error);
     }
   }
 
-  getUserById(req: Request, res: Response): void {
+  getUserById(req: Request, res: Response, next: NextFunction): void {
     try {
       const { id } = req.params;
       if (!id || typeof id !== 'string') {
-        res.status(400).json({ error: 'Valid ID is required' });
-        return;
+        throw new BadRequestError('Valid ID is required');
       }
+      
       const user = this.userService.getUserById(id);
-      
-      if (!user) {
-        logger.warn({ id }, 'User not found');
-        res.status(404).json({ error: 'User not found' });
-        return;
-      }
-      
       logger.info({ id }, 'Fetched user');
       res.status(200).json(user);
     } catch (error) {
-      const { id } = req.params;
-      logger.error({ error, id }, 'Error fetching user');
-      res.status(500).json({ error: 'Failed to fetch user' });
+      next(error);
     }
   }
 
-  createUser(req: Request, res: Response): void {
+  createUser(req: Request, res: Response, next: NextFunction): void {
     try {
       const userData = req.body;
       const newUser = this.userService.createUser(userData);
       logger.info({ userId: newUser.id }, 'Created new user');
       res.status(201).json(newUser);
     } catch (error) {
-      logger.error({ error }, 'Error creating user');
-      res.status(400).json({ error: 'Failed to create user' });
+      next(error);
     }
   }
 
-  updateUser(req: Request, res: Response): void {
+  updateUser(req: Request, res: Response, next: NextFunction): void {
     try {
       const { id } = req.params;
       if (!id || typeof id !== 'string') {
-        res.status(400).json({ error: 'Valid ID is required' });
-        return;
+        throw new BadRequestError('Valid ID is required');
       }
+      
       const userData = req.body;
       const updatedUser = this.userService.updateUser(id, userData);
-      
-      if (!updatedUser) {
-        logger.warn({ id }, 'User not found for update');
-        res.status(404).json({ error: 'User not found' });
-        return;
-      }
-      
       logger.info({ id }, 'Updated user');
       res.status(200).json(updatedUser);
     } catch (error) {
-      const { id } = req.params;
-      logger.error({ error, id }, 'Error updating user');
-      res.status(400).json({ error: 'Failed to update user' });
+      next(error);
     }
   }
 
-  deleteUser(req: Request, res: Response): void {
+  deleteUser(req: Request, res: Response, next: NextFunction): void {
     try {
       const { id } = req.params;
       if (!id || typeof id !== 'string') {
-        res.status(400).json({ error: 'Valid ID is required' });
-        return;
-      }
-      const deleted = this.userService.deleteUser(id);
-      
-      if (!deleted) {
-        logger.warn({ id }, 'User not found for deletion');
-        res.status(404).json({ error: 'User not found' });
-        return;
+        throw new BadRequestError('Valid ID is required');
       }
       
+      this.userService.deleteUser(id);
       logger.info({ id }, 'Deleted user');
       res.status(204).send();
     } catch (error) {
-      const { id } = req.params;
-      logger.error({ error, id }, 'Error deleting user');
-      res.status(500).json({ error: 'Failed to delete user' });
+      next(error);
     }
   }
 }
