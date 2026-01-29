@@ -7,6 +7,10 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
+    "docker:build": "docker build -t my-express-api .",
+    "docker:dev": "docker-compose --profile dev up app-dev",
+    "docker:prod": "docker-compose up app",
+    "docker:down": "docker-compose down",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
