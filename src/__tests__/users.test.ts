@@ -5,16 +5,16 @@ import { createApp } from '../app.js';
 describe('User API', () => {
   const app = createApp();
 
-  describe('GET /api/users', () => {
+  describe('GET /api/v1/users', () => {
     it('should return empty array initially', async () => {
-      const response = await request(app).get('/api/users');
+      const response = await request(app).get('/api/v1/users');
       
       expect(response.status).toBe(200);
       expect(response.body).toEqual([]);
     });
   });
 
-  describe('POST /api/users', () => {
+  describe('POST /api/v1/users', () => {
     it('should create a new user', async () => {
       const newUser = {
         name: 'John Doe',
@@ -22,7 +22,7 @@ describe('User API', () => {
       };
 
       const response = await request(app)
-        .post('/api/users')
+        .post('/api/v1/users')
         .send(newUser);
       
       expect(response.status).toBe(201);
@@ -33,7 +33,7 @@ describe('User API', () => {
 
     it('should validate required fields', async () => {
       const response = await request(app)
-        .post('/api/users')
+        .post('/api/v1/users')
         .send({});
       
       expect(response.status).toBe(400);
@@ -42,7 +42,7 @@ describe('User API', () => {
 
     it('should validate email format', async () => {
       const response = await request(app)
-        .post('/api/users')
+        .post('/api/v1/users')
         .send({
           name: 'John Doe',
           email: 'invalid-email',
@@ -53,9 +53,9 @@ describe('User API', () => {
     });
   });
 
-  describe('GET /api/users/:id', () => {
+  describe('GET /api/v1/users/:id', () => {
     it('should return 404 for non-existent user', async () => {
-      const response = await request(app).get('/api/users/999');
+      const response = await request(app).get('/api/v1/users/999');
       
       expect(response.status).toBe(404);
       expect(response.body).toHaveProperty('error', 'User not found');

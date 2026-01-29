@@ -29,7 +29,7 @@ describe('API Root', () => {
     
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('message', 'Welcome to the API');
-    expect(response.body).toHaveProperty('version', '1.0.0');
-    expect(response.body).toHaveProperty('endpoints');
+    expect(response.body).toHaveProperty('versions');
+    expect(response.body.versions).toHaveProperty('v1', '/api/v1');
   });
 });

@@ -1,22 +1,21 @@
 import { Router } from 'express';
-import { createUserRouter } from './users.js';
+import { createV1Router } from './v1/index.js';
 import type { Cradle } from '../config/container.js';
 
 export function createApiRouter(container: { cradle: Cradle }) {
   const apiRouter = Router();
 
-  // Mount route modules
-  apiRouter.use('/users', createUserRouter(container));
+  // Mount API versions
+  apiRouter.use('/v1', createV1Router(container));
 
-  // Root API endpoint
+  // API root
   apiRouter.get('/', (req, res) => {
     res.json({
       message: 'Welcome to the API',
-      version: '1.0.0',
-      endpoints: {
-        users: '/api/users',
-        health: '/health'
-      }
+      versions: {
+        v1: '/api/v1',
+      },
+      health: '/health'
     });
   });
 

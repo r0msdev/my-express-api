@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import type { Request, Response, NextFunction } from 'express';
-import { validate } from '../middleware/validate.js';
-import { createUserSchema, updateUserSchema } from '../schemas/user.schema.js';
-import type { Cradle } from '../config/container.js';
+import { validate } from '../../middleware/validate.js';
+import { createUserSchema, updateUserSchema } from '../../schemas/user.schema.js';
+import type { Cradle } from '../../config/container.js';
 
 export function createUserRouter(container: { cradle: Cradle }) {
   const userRouter = Router();
