@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { UserService } from '../services/userService.js';
+import { logger } from '../utils/logger.js';
 
 export class UserController {
   private userService: UserService;
@@ -11,9 +12,10 @@ export class UserController {
   getAllUsers(req: Request, res: Response): void {
     try {
       const users = this.userService.getAllUsers();
+      logger.info({ count: users.length }, 'Fetched all users');
       res.status(200).json(users);
     } catch (error) {
-      console.error('Error fetching users:', error);
+      logger.error({ error }, 'Error fetching users');
       res.status(500).json({ error: 'Failed to fetch users' });
     }
   }
@@ -28,13 +30,16 @@ export class UserController {
       const user = this.userService.getUserById(id);
       
       if (!user) {
+        logger.warn({ id }, 'User not found');
         res.status(404).json({ error: 'User not found' });
         return;
       }
       
+      logger.info({ id }, 'Fetched user');
       res.status(200).json(user);
     } catch (error) {
-      console.error('Error fetching user:', error);
+      const { id } = req.params;
+      logger.error({ error, id }, 'Error fetching user');
       res.status(500).json({ error: 'Failed to fetch user' });
     }
   }
@@ -43,9 +48,10 @@ export class UserController {
     try {
       const userData = req.body;
       const newUser = this.userService.createUser(userData);
+      logger.info({ userId: newUser.id }, 'Created new user');
       res.status(201).json(newUser);
     } catch (error) {
-      console.error('Error creating user:', error);
+      logger.error({ error }, 'Error creating user');
       res.status(400).json({ error: 'Failed to create user' });
     }
   }
@@ -61,13 +67,16 @@ export class UserController {
       const updatedUser = this.userService.updateUser(id, userData);
       
       if (!updatedUser) {
+        logger.warn({ id }, 'User not found for update');
         res.status(404).json({ error: 'User not found' });
         return;
       }
       
+      logger.info({ id }, 'Updated user');
       res.status(200).json(updatedUser);
     } catch (error) {
-      console.error('Error updating user:', error);
+      const { id } = req.params;
+      logger.error({ error, id }, 'Error updating user');
       res.status(400).json({ error: 'Failed to update user' });
     }
   }
@@ -82,13 +91,16 @@ export class UserController {
       const deleted = this.userService.deleteUser(id);
       
       if (!deleted) {
+        logger.warn({ id }, 'User not found for deletion');
         res.status(404).json({ error: 'User not found' });
         return;
       }
       
+      logger.info({ id }, 'Deleted user');
       res.status(204).send();
     } catch (error) {
-      console.error('Error deleting user:', error);
+      const { id } = req.params;
+      logger.error({ error, id }, 'Error deleting user');
       res.status(500).json({ error: 'Failed to delete user' });
     }
   }

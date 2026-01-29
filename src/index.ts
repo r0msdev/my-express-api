@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import { apiRouter } from './routes/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { logger } from './utils/logger.js';
 
 // Load environment variables
 dotenv.config();
@@ -26,7 +27,7 @@ app.use(errorHandler);
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  logger.info(`Server is running on port ${PORT}`);
 });
 
 export default app;

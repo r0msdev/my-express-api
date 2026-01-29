@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 import { UserController } from '../controllers/userController.js';
+import { validate } from '../middleware/validate.js';
+import { createUserSchema, updateUserSchema } from '../schemas/user.schema.js';
 
 export const userRouter = Router();
 const userController = new UserController();
@@ -16,12 +18,12 @@ userRouter.get('/:id', (req: Request, res: Response) => {
 });
 
 // POST /api/users
-userRouter.post('/', (req: Request, res: Response) => {
+userRouter.post('/', validate(createUserSchema), (req: Request, res: Response) => {
   userController.createUser(req, res);
 });
 
 // PUT /api/users/:id
-userRouter.put('/:id', (req: Request, res: Response) => {
+userRouter.put('/:id', validate(updateUserSchema), (req: Request, res: Response) => {
   userController.updateUser(req, res);
 });
 
