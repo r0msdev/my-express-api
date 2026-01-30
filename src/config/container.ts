@@ -1,14 +1,14 @@
-import { createContainer, asClass, asFunction, InjectionMode } from 'awilix';
+import { createContainer, asClass, asValue, InjectionMode } from 'awilix';
 import { UserRepository } from '../repositories/userRepository.js';
 import { UserService } from '../services/userService.js';
 import { UserController } from '../controllers/userController.js';
-import { logger, type AppLogger } from '../utils/logger.js';
+import { logger } from '../utils/logger.js';
 
 export interface Cradle {
   userRepository: UserRepository;
   userService: UserService;
   userController: UserController;
-  logger: AppLogger;
+  logger: typeof logger;
   correlationId: string;
 }
 
@@ -32,13 +32,9 @@ export function configureContainer() {
     userController: asClass(UserController).scoped(),
   });
 
-  // Register logger (scoped - per request with correlation ID)
+  // Register base logger
   container.register({
-    logger: asFunction(({ correlationId }: Cradle) => {
-      return logger.child({
-        correlationId: correlationId || 'unknown',
-      });
-    }).scoped(),
+    logger: asValue(logger),
   });
 
   return container;

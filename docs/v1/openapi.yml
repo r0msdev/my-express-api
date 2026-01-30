@@ -23,9 +23,17 @@ paths:
         - Health
       summary: Health check
       description: Check if the API is running
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
       responses:
         '200':
           description: API is healthy
+          headers:
+            X-Correlation-ID:
+              description: Correlation ID for request tracing
+              schema:
+                type: string
+                format: uuid
           content:
             application/json:
               schema:
@@ -44,9 +52,17 @@ paths:
         - Users
       summary: Get all users
       description: Retrieve a list of all users
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
       responses:
         '200':
           description: List of users
+          headers:
+            X-Correlation-ID:
+              description: Correlation ID for request tracing
+              schema:
+                type: string
+                format: uuid
           content:
             application/json:
               schema:
@@ -59,6 +75,8 @@ paths:
         - Users
       summary: Create a new user
       description: Create a new user with the provided data
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
       requestBody:
         required: true
         content:
@@ -68,18 +86,36 @@ paths:
       responses:
         '201':
           description: User created successfully
+          headers:
+            X-Correlation-ID:
+              description: Correlation ID for request tracing
+              schema:
+                type: string
+                format: uuid
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
         '400':
           description: Validation error
+          headers:
+            X-Correlation-ID:
+              description: Correlation ID for request tracing
+              schema:
+                type: string
+                format: uuid
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '409':
           description: User with this email already exists
+          headers:
+            X-Correlation-ID:
+              description: Correlation ID for request tracing
+              schema:
+                type: string
+                format: uuid
           content:
             application/json:
               schema:
@@ -98,15 +134,28 @@ paths:
           schema:
             type: string
           description: User ID
+        - $ref: '#/components/parameters/CorrelationId'
       responses:
         '200':
           description: User found
+          headers:
+            X-Correlation-ID:
+              description: Correlation ID for request tracing
+              schema:
+                type: string
+                format: uuid
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
         '404':
           description: User not found
+          headers:
+            X-Correlation-ID:
+              description: Correlation ID for request tracing
+              schema:
+                type: string
+                format: uuid
           content:
             application/json:
               schema:
@@ -124,6 +173,7 @@ paths:
           schema:
             type: string
           description: User ID
+        - $ref: '#/components/parameters/CorrelationId'
       requestBody:
         required: true
         content:
@@ -133,24 +183,48 @@ paths:
       responses:
         '200':
           description: User updated successfully
+          headers:
+            X-Correlation-ID:
+              description: Correlation ID for request tracing
+              schema:
+                type: string
+                format: uuid
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
         '400':
           description: Validation error
+          headers:
+            X-Correlation-ID:
+              description: Correlation ID for request tracing
+              schema:
+                type: string
+                format: uuid
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
           description: User not found
+          headers:
+            X-Correlation-ID:
+              description: Correlation ID for request tracing
+              schema:
+                type: string
+                format: uuid
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '409':
           description: Email already in use
+          headers:
+            X-Correlation-ID:
+              description: Correlation ID for request tracing
+              schema:
+                type: string
+                format: uuid
           content:
             application/json:
               schema:
@@ -168,17 +242,41 @@ paths:
           schema:
             type: string
           description: User ID
+        - $ref: '#/components/parameters/CorrelationId'
       responses:
         '204':
           description: User deleted successfully
+          headers:
+            X-Correlation-ID:
+              description: Correlation ID for request tracing
+              schema:
+                type: string
+                format: uuid
         '404':
           description: User not found
+          headers:
+            X-Correlation-ID:
+              description: Correlation ID for request tracing
+              schema:
+                type: string
+                format: uuid
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
 
 components:
+  parameters:
+    CorrelationId:
+      name: x-correlation-id
+      in: header
+      description: Correlation ID for request tracing and log aggregation. If not provided, one will be auto-generated.
+      required: false
+      schema:
+        type: string
+        format: uuid
+      example: "550e8400-e29b-41d4-a716-446655440000"
+
   schemas:
     User:
       type: object

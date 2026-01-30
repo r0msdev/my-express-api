@@ -7,9 +7,9 @@ export class UserController {
   private userService: UserService;
   private logger: AppLogger;
 
-  constructor(userService: UserService, logger: AppLogger) {
-    this.userService = userService;
-    this.logger = logger;
+  constructor(userService: UserService, logger: AppLogger, correlationId: string) {
+    this.userService = userService;    
+    this.logger = logger.child({ correlationId });
   }
 
   getAllUsers(req: Request, res: Response, next: NextFunction): void {
