@@ -1,9 +1,11 @@
 import express from 'express';
+import swaggerUi from 'swagger-ui-express';
 import { createApiRouter } from './routes/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { configureContainer } from './config/container.js';
 import { correlationIdMiddleware } from './middleware/correlationId.js';
 import { createScopeMiddleware } from './middleware/scope.js';
+import { swaggerDocument, swaggerOptions } from './config/swagger.js';
 
 export function createApp() {
   const app = express();
@@ -16,6 +18,9 @@ export function createApp() {
   app.use(createScopeMiddleware(container)); // Create request scope
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+
+  // API Documentation
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));
 
   // Routes
   app.use('/api', createApiRouter(container));

@@ -35,6 +35,9 @@ RUN npm ci --only=production && npm cache clean --force
 # Copy built files from builder stage
 COPY --from=builder /app/dist ./dist
 
+# Copy API documentation
+COPY --from=builder /app/docs ./docs
+
 # Change ownership to non-root user
 RUN chown -R nodejs:nodejs /app
 
