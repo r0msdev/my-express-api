@@ -12,11 +12,11 @@ export type Env = z.infer<typeof envSchema>;
 function validateEnv(): Env {
   try {
     const env = envSchema.parse(process.env);
-    logger.info({ env: { ...env } }, 'Environment variables validated');
+    logger.info('Environment variables validated', { env: { ...env } });
     return env;
   } catch (error) {
     if (error instanceof z.ZodError) {
-      logger.error({ errors: error.issues }, 'Invalid environment variables');
+      logger.error('Invalid environment variables', { errors: error.issues });
       console.error('❌ Invalid environment variables:');
       error.issues.forEach((issue) => {
         console.error(`  - ${issue.path.join('.')}: ${issue.message}`);

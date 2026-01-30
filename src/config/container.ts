@@ -2,13 +2,13 @@ import { createContainer, asClass, asFunction, InjectionMode } from 'awilix';
 import { UserRepository } from '../repositories/userRepository.js';
 import { UserService } from '../services/userService.js';
 import { UserController } from '../controllers/userController.js';
-import { logger } from '../utils/logger.js';
+import { logger, type AppLogger } from '../utils/logger.js';
 
 export interface Cradle {
   userRepository: UserRepository;
   userService: UserService;
   userController: UserController;
-  logger: typeof logger;
+  logger: AppLogger;
   correlationId: string;
 }
 

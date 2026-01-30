@@ -11,12 +11,12 @@ export const errorHandler = (
 ): void => {
   // Handle operational errors (custom errors)
   if (err instanceof AppError) {
-    logger.warn({ 
+    logger.warn('Operational error', { 
       statusCode: err.statusCode, 
       message: err.message, 
       url: req.url, 
       method: req.method 
-    }, 'Operational error');
+    });
     
     res.status(err.statusCode).json({
       error: err.message,
@@ -25,7 +25,7 @@ export const errorHandler = (
   }
 
   // Handle unexpected errors
-  logger.error({ err, url: req.url, method: req.method }, 'Unexpected error');
+  logger.error('Unexpected error', { err, url: req.url, method: req.method });
   
   res.status(500).json({
     error: 'Internal Server Error',

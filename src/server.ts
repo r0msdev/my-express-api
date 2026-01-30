@@ -29,12 +29,12 @@ process.on('SIGINT', () => shutdown('SIGINT'));
 
 // Handle uncaught errors
 process.on('uncaughtException', (error) => {
-  logger.error({ error }, 'Uncaught exception');
+  logger.error('Uncaught exception', { error });
   process.exit(1);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  logger.error({ reason, promise }, 'Unhandled rejection');
+  logger.error('Unhandled rejection', { reason, promise });
   process.exit(1);
 });
 
