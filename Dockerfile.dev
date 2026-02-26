@@ -1,23 +1,29 @@
+# syntax=docker/dockerfile:1
 # Development Dockerfile with hot reload
 FROM node:24-alpine
 
-WORKDIR /app
+# Upgrade OS packages to patch known CVEs
+RUN apk update && apk upgrade --no-cache && rm -rf /var/cache/apk/*
+
+LABEL org.opencontainers.image.title="my-express-api-dev" \
+      org.opencontainers.image.description="Express API service (development)" \
+      org.opencontainers.image.version="1.0.0"
+
+# Set development environment
+ENV NODE_ENV=development
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001
 
 # Copy package files
-COPY package*.json ./
+COPY --chown=nodejs:nodejs package*.json ./
 
 # Install all dependencies (including devDependencies)
-RUN npm install
+RUN npm ci
 
 # Copy source code
-COPY . .
-
-# Change ownership to non-root user
-RUN chown -R nodejs:nodejs /app
+COPY --chown=nodejs:nodejs . .
 
 # Switch to non-root user
 USER nodejs
@@ -26,4 +32,5 @@ USER nodejs
 EXPOSE 3000
 
 # Start development server with hot reload
-CMD ["npm", "run", "dev"]
+# Use local binary instead of npx to avoid runtime package pulls
+CMD ["./node_modules/.bin/tsx", "watch", "src/index.ts"]

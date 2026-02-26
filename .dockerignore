@@ -28,3 +28,12 @@ coverage/
 # Misc
 *.log
 .eslintcache
+
+# Docker files (not needed inside the image)
+Dockerfile
+Dockerfile.*
+docker-compose.yml
+.dockerignore
+
+# Markdown
+*.md
