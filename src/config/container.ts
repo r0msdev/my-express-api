@@ -1,9 +1,10 @@
 import { createContainer, asClass, asValue, InjectionMode } from 'awilix';
-import type { UserRepository } from '../repositories/userRepository.js';
 import { InMemoryUserRepository } from '../repositories/userRepository.js';
 import { UserService } from '../services/userService.js';
 import { UserController } from '../controllers/userController.js';
 import { logger } from '../utils/logger.js';
+import type { UserRepository } from '../repositories/userRepository.js';
+import type { RequestContext } from '../types/requestContext.js';
 
 export interface Cradle {
   userRepository: UserRepository;
@@ -11,6 +12,7 @@ export interface Cradle {
   userController: UserController;
   logger: typeof logger;
   correlationId: string;
+  context: RequestContext;
 }
 
 export function configureContainer() {
