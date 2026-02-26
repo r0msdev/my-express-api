@@ -30,7 +30,7 @@ export class UserRepository {
     }
     
     const currentUser = this.users[index]!;
-    this.users[index] = { ...currentUser, ...userData, id: currentUser.id };
+    this.users[index] = { ...currentUser, ...userData, id: currentUser.id, updatedAt: new Date() };
     return this.users[index];
   }
 

@@ -1,3 +1,5 @@
+import type { core } from 'zod';
+
 export class AppError extends Error {
   constructor(
     public statusCode: number,
@@ -46,8 +48,14 @@ export class ConflictError extends AppError {
 }
 
 export class ValidationError extends AppError {
-  constructor(message = 'Validation failed') {
-    super(422, message);
+  public details: { path: string; message: string }[];
+
+  constructor(issues: core.$ZodIssue[] = []) {
+    super(422, 'Validation failed');
+    this.details = issues.map(issue => ({
+      path: issue.path.map(String).join('.'),
+      message: issue.message,
+    }));
     Object.setPrototypeOf(this, ValidationError.prototype);
   }
 }

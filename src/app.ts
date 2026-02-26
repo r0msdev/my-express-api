@@ -22,7 +22,7 @@ export function createApp() {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));
 
   // Routes
-  app.use('/api', createApiRouter(container));
+  app.use('/api', createApiRouter());
 
   // Health check endpoint
   app.get('/health', (req, res) => {

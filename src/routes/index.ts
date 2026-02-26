@@ -1,12 +1,11 @@
 import { Router } from 'express';
 import { createV1Router } from './v1/index.js';
-import type { Cradle } from '../config/container.js';
 
-export function createApiRouter(container: { cradle: Cradle }) {
+export function createApiRouter() {
   const apiRouter = Router();
 
   // Mount API versions
-  apiRouter.use('/v1', createV1Router(container));
+  apiRouter.use('/v1', createV1Router());
 
   // API root
   apiRouter.get('/', (req, res) => {

@@ -1,12 +1,11 @@
 import { Router } from 'express';
 import { createUserRouter } from './users.js';
-import type { Cradle } from '../../config/container.js';
 
-export function createV1Router(container: { cradle: Cradle }) {
+export function createV1Router() {
   const v1Router = Router();
 
   // Mount resource routes
-  v1Router.use('/users', createUserRouter(container));
+  v1Router.use('/users', createUserRouter());
 
   // V1 API root
   v1Router.get('/', (req, res) => {

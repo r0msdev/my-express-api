@@ -36,8 +36,9 @@ describe('User API', () => {
         .post('/api/v1/users')
         .send({});
       
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(422);
       expect(response.body).toHaveProperty('error', 'Validation failed');
+      expect(response.body.details).toBeInstanceOf(Array);
     });
 
     it('should validate email format', async () => {
@@ -48,8 +49,9 @@ describe('User API', () => {
           email: 'invalid-email',
         });
       
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(422);
       expect(response.body.error).toBe('Validation failed');
+      expect(response.body.details).toBeInstanceOf(Array);
     });
   });
 
