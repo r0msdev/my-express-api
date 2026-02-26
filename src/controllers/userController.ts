@@ -1,7 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import { UserService } from '../services/userService.js';
 import type { AppLogger } from '../utils/logger.js';
-import { BadRequestError } from '../errors/customErrors.js';
 
 export class UserController {
   private userService: UserService;
@@ -12,9 +11,9 @@ export class UserController {
     this.logger = logger.child({ correlationId });
   }
 
-  getAllUsers(req: Request, res: Response, next: NextFunction): void {
+  async getAllUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const users = this.userService.getAllUsers();
+      const users = await this.userService.getAllUsers();
       this.logger.info('Fetched all users', { count: users.length });
       res.status(200).json(users);
     } catch (error) {
@@ -22,14 +21,10 @@ export class UserController {
     }
   }
 
-  getUserById(req: Request, res: Response, next: NextFunction): void {
+  async getUserById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { id } = req.params;
-      if (!id || typeof id !== 'string') {
-        throw new BadRequestError('Valid ID is required');
-      }
-      
-      const user = this.userService.getUserById(id);
+      const id = req.params.id as string;
+      const user = await this.userService.getUserById(id);
       this.logger.info('Fetched user', { id });
       res.status(200).json(user);
     } catch (error) {
@@ -37,10 +32,10 @@ export class UserController {
     }
   }
 
-  createUser(req: Request, res: Response, next: NextFunction): void {
+  async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const userData = req.body;
-      const newUser = this.userService.createUser(userData);
+      const newUser = await this.userService.createUser(userData);
       this.logger.info('Created new user', { userId: newUser.id });
       res.status(201).json(newUser);
     } catch (error) {
@@ -48,15 +43,11 @@ export class UserController {
     }
   }
 
-  updateUser(req: Request, res: Response, next: NextFunction): void {
+  async updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { id } = req.params;
-      if (!id || typeof id !== 'string') {
-        throw new BadRequestError('Valid ID is required');
-      }
-      
+      const id = req.params.id as string;
       const userData = req.body;
-      const updatedUser = this.userService.updateUser(id, userData);
+      const updatedUser = await this.userService.updateUser(id, userData);
       this.logger.info('Updated user', { id });
       res.status(200).json(updatedUser);
     } catch (error) {
@@ -64,14 +55,10 @@ export class UserController {
     }
   }
 
-  deleteUser(req: Request, res: Response, next: NextFunction): void {
+  async deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { id } = req.params;
-      if (!id || typeof id !== 'string') {
-        throw new BadRequestError('Valid ID is required');
-      }
-      
-      this.userService.deleteUser(id);
+      const id = req.params.id as string;
+      await this.userService.deleteUser(id);
       this.logger.info('Deleted user', { id });
       res.status(204).send();
     } catch (error) {

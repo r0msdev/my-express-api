@@ -1,5 +1,6 @@
 import { createContainer, asClass, asValue, InjectionMode } from 'awilix';
-import { UserRepository } from '../repositories/userRepository.js';
+import type { UserRepository } from '../repositories/userRepository.js';
+import { InMemoryUserRepository } from '../repositories/userRepository.js';
 import { UserService } from '../services/userService.js';
 import { UserController } from '../controllers/userController.js';
 import { logger } from '../utils/logger.js';
@@ -19,7 +20,7 @@ export function configureContainer() {
 
   // Register repositories (singleton - shared across all requests)
   container.register({
-    userRepository: asClass(UserRepository).singleton(),
+    userRepository: asClass(InMemoryUserRepository).singleton(),
   });
 
   // Register services (scoped - per request)
