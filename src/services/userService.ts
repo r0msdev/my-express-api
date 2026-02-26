@@ -37,19 +37,15 @@ export class UserService {
   }
 
   async updateUser(id: string, userData: Partial<Omit<User, 'id'>>): Promise<User> {
-    if (userData.email && await this.userRepository.existsByEmail(userData.email)) {
-      const existingUser = await this.userRepository.findById(id);
-      if (existingUser?.email !== userData.email) {
+    const existingUser = await this.getUserById(id);
+
+    if (userData.email && userData.email !== existingUser.email) {
+      if (await this.userRepository.existsByEmail(userData.email)) {
         throw new ConflictError('User with this email already exists');
       }
     }
 
-    const updatedUser = await this.userRepository.update(id, userData);
-    if (!updatedUser) {
-      throw new NotFoundError('User not found');
-    }
-
-    return updatedUser;
+    return (await this.userRepository.update(id, userData))!;
   }
 
   async deleteUser(id: string): Promise<void> {

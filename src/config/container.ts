@@ -1,5 +1,5 @@
 import { createContainer, asClass, asValue, InjectionMode } from 'awilix';
-import { InMemoryUserRepository } from '../repositories/userRepository.js';
+import { InMemoryUserRepository } from '../repositories/inMemoryUserRepository.js';
 import { UserService } from '../services/userService.js';
 import { UserController } from '../controllers/userController.js';
 import { logger } from '../utils/logger.js';
