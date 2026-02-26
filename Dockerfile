@@ -5,12 +5,6 @@
 FROM node:24-alpine AS base
 WORKDIR /app
 
-# Upgrade OS packages to patch known CVEs
-RUN apk update && apk upgrade --no-cache && rm -rf /var/cache/apk/*
-
-# Upgrade npm to latest to patch bundled dependency CVEs (tar, minimatch)
-RUN npm install -g npm@latest
-
 # Stage 1: Build
 FROM base AS builder
 

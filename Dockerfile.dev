@@ -2,12 +2,6 @@
 # Development Dockerfile with hot reload
 FROM node:24-alpine
 
-# Upgrade OS packages to patch known CVEs
-RUN apk update && apk upgrade --no-cache && rm -rf /var/cache/apk/*
-
-# Upgrade npm to latest to patch bundled dependency CVEs (tar, minimatch)
-RUN npm install -g npm@latest
-
 LABEL org.opencontainers.image.title="my-express-api-dev" \
       org.opencontainers.image.description="Express API service (development)" \
       org.opencontainers.image.version="1.0.0"
